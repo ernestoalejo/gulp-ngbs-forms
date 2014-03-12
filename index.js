@@ -16,6 +16,8 @@ function gulpNgbsForms(options) {
   }, options);
 
   var stream = through.obj(function(file, enc, callback) {
+    var that = this;
+
     // Do nothing if no contents
     if (file.isNull()) {
       this.push(file);
@@ -32,9 +34,13 @@ function gulpNgbsForms(options) {
       var result = _.template(file.contents.toString(), {
         buildForm: function(filename) {
           var frmPath = path.join(options.formsCwd, filename);
-          var frmContents = fs.readFileSync(path.resolve(frmPath));
-          var source = forms.parse(frmContents.toString());
-          return forms.generate(source);
+          try {
+            var frmContents = fs.readFileSync(path.resolve(frmPath));
+            var source = forms.parse(frmContents.toString());
+            return forms.generate(source);
+          } catch (err) {
+            that.emit('error', err);
+          }
         },
       });
       file.contents = new Buffer(result);
