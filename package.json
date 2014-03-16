@@ -26,7 +26,7 @@
   "dependencies": {
     "through2": "~0.4.1",
     "gulp-util": "~2.2.14",
-    "ngbs-forms": "~1.0.0",
+    "ngbs-forms": "~1.0.1",
     "underscore": "~1.6.0"
   },
   "devDependencies": {
