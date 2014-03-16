@@ -5,8 +5,7 @@ var through = require('through2'),
     PluginError = gutil.PluginError,
     forms = require('ngbs-forms'),
     _ = require('underscore'),
-    path = require('path'),
-    fs = require('fs');
+    path = require('path');
 
 var PLUGIN_NAME = 'gulp-ngbs-forms';
 
@@ -35,9 +34,7 @@ function gulpNgbsForms(options) {
         buildForm: function(filename) {
           var frmPath = path.join(options.formsCwd, filename);
           try {
-            var frmContents = fs.readFileSync(path.resolve(frmPath));
-            var source = forms.parse(frmContents.toString());
-            return forms.generate(source);
+            return forms.generate(path.resolve(frmPath));
           } catch (err) {
             that.emit('error', err);
           }
