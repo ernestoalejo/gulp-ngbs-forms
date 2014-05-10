@@ -5,14 +5,30 @@ var through = require('through2'),
     PluginError = gutil.PluginError,
     forms = require('ngbs-forms'),
     _ = require('underscore'),
-    path = require('path');
+    path = require('path'),
+    fs = require('fs');
 
 var PLUGIN_NAME = 'gulp-ngbs-forms';
 
+
+var exists = function(filepath) {
+  try {
+    fs.statSync(filepath);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+
 function gulpNgbsForms(options) {
   options = _.extend({
-    formsCwd: '.',
+    formsCwd: ['.'],
   }, options);
+
+  if (!_.isArray(options.formsCwd)) {
+    options.formsCwd = [options.formsCwd];
+  }
 
   var stream = through.obj(function(file, enc, callback) {
     var that = this;
@@ -32,12 +48,29 @@ function gulpNgbsForms(options) {
     if (file.isBuffer()) {
       var result = _.template(file.contents.toString(), {
         buildForm: function(filename) {
-          var frmPath = path.join(options.formsCwd, filename);
-          try {
-            return forms.generate(path.resolve(frmPath));
-          } catch (err) {
-            that.emit('error', err);
+          var ret;
+
+          _.each(options.formsCwd, function(folder) {
+            if (ret) {
+              return;
+            }
+
+            var frmPath = path.join(folder, filename);
+            if (exists(frmPath)) {
+              try {
+                ret = forms.generate(path.resolve(frmPath));
+                return;
+              } catch (err) {
+                that.emit('error', err);
+              }
+            }
+          });
+
+          if (!ret) {
+            that.emit('error', new Error('file not found: ' + filename));
           }
+
+          return ret;
         },
       });
       file.contents = new Buffer(result);
