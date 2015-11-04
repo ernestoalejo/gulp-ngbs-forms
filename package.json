@@ -1,6 +1,6 @@
 {
   "name": "gulp-ngbs-forms",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Generate forms using Angular for validations and Bootstrap for styles from short and concise descriptions of the fields.",
   "main": "index.js",
   "scripts": {
@@ -26,7 +26,7 @@
   "dependencies": {
     "through2": "~0.4.1",
     "gulp-util": "~2.2.14",
-    "ngbs-forms": "~1.4.1",
+    "ngbs-forms": "~1.5.0",
     "underscore": "~1.6.0"
   },
   "devDependencies": {
